@@ -23,7 +23,7 @@ void printName( )
 {
     /* TODO : Fill in your name*/
     printf("\nThis solution was completed by:\n");
-    printf("<student name>\n\n");
+    printf("Nathaniel Bucknor-Smartt\n\n");
 }
 
 /* createTree
