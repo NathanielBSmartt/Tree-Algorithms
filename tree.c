@@ -296,14 +296,13 @@ void updateHeights(TNode* root){
 void rebalanceTree(Tree* t, TNode* x){
     while (x != NULL) {
         updateHeights(x);
-        int balance = getBalance(x);
 
-        if (balance > 1) {
+        if (getBalance(x) > 1) {
             if (getBalance(x->pLeft) < 0) {
                 leftRotate(t, x->pLeft);
             }
             rightRotate(t, x);
-        } else if (balance < -1) {
+        } else if (getBalance(x) < -1) {
             if (getBalance(x->pRight) > 0) {
                 rightRotate(t, x->pRight);
             }
