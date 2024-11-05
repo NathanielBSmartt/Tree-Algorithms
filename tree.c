@@ -1,5 +1,7 @@
 #include "tree.h"
 
+
+
 /**********  Helper functions for removing from an AVL tree **********/
 TNode* removeNextInorder( TNode** pRoot );
 
@@ -23,7 +25,7 @@ void printName( )
 {
     /* TODO : Fill in your name*/
     printf("\nThis solution was completed by:\n");
-    printf("Nathaniel Bucknor-Smartt\n\n");
+    printf("<Nathaniel Bucknor-Smartt>\n\n");
 }
 
 /* createTree
@@ -292,7 +294,24 @@ void updateHeights(TNode* root){
  * For additional help in testing set the parameters PRINT_AVL_TREE and PRINT_AVL_ERRORS to true in the driver
  */
 void rebalanceTree(Tree* t, TNode* x){
-    //TODO
+    while (x != NULL) {
+        updateHeights(x);
+        int balance = getBalance(x);
+
+        if (balance > 1) {
+            if (getBalance(x->pLeft) < 0) {
+                leftRotate(t, x->pLeft);
+            }
+            rightRotate(t, x);
+        } else if (balance < -1) {
+            if (getBalance(x->pRight) > 0) {
+                rightRotate(t, x->pRight);
+            }
+            leftRotate(t, x);
+        }
+
+        x = x->pParent;
+    }
 }
 
 /* getTallerSubTree
@@ -423,6 +442,22 @@ int getBalance(TNode* root){
 void printHuffmanEncoding( TNode* root, char c ){
     //TODO
 
+    if (root == NULL) {
+        return;
+    }
+
+    if (strchr(root->str, c) != NULL) {
+        if (root->pLeft != NULL && strchr(root->pLeft->str, c) != NULL) {
+            printf("0");
+            printHuffmanEncoding(root->pLeft, c);
+        } else if (root->pRight != NULL && strchr(root->pRight->str, c) != NULL) {
+            printf("1");
+            printHuffmanEncoding(root->pRight, c);
+        }
+    }
+
+
+
 }
 
 /**********  Functions for Segment Tree **********/
@@ -454,8 +489,24 @@ TNode* constructSegmentTree( double* points, int low, int high ){
  * Recursively inserts given line segment from segmentStart to segmentEnd into the tree
  */
 void insertSegment( TNode* root, double segmentStart, double segmentEnd ){
-    //TODO
+    if(root == NULL) {
+        return;
+    }
 
+    if(segmentStart > segmentEnd){
+        return;
+    }
+
+    if(segmentEnd < root->low || segmentStart > root->high){
+        return;
+    }
+
+    if(segmentStart <= root->low && segmentEnd >= root->high){
+        root->cnt++;
+    } else {
+        insertSegment(root->pLeft, segmentStart, segmentEnd);
+        insertSegment(root->pRight, segmentStart, segmentEnd);
+    }
 }
 
 /* lineStabQuery
@@ -465,9 +516,15 @@ void insertSegment( TNode* root, double segmentStart, double segmentEnd ){
  * Recursively count the number of line segments which intersect the queryPoint.
  */
 int lineStabQuery( TNode* root, double queryPoint ){
-    //TODO
+    if (root == NULL) {
+        return 0;
+    }
 
-    return -1;
+    if (queryPoint < root->low || queryPoint > root->high) {
+        return 0;
+    }
+
+    return lineStabQuery(root->pLeft, queryPoint) + lineStabQuery(root->pRight, queryPoint) + root->cnt;
 }
 
 
